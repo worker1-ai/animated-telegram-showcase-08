@@ -1,12 +1,11 @@
 
 import { Slide } from "./Slide";
-import { Search, MessageCircle, Binary, Sparkles, History, MoveUpRight, FileText, ArrowRight } from "lucide-react";
+import { Search, MessageCircle, Binary, Sparkles, History, MoveUpRight, FileText } from "lucide-react";
 
 export const SlideSearch = ({ active }: { active: boolean }) => {
   return (
     <Slide active={active} className="bg-gradient-to-br from-gray-900 to-gray-800">
       <div className="flex flex-col items-center justify-center h-full text-white space-y-8">
-        {/* Заголовок */}
         <h2
           className="text-3xl font-bold animate-fade-in"
           style={{ animationDelay: "0.5s" }}
@@ -14,14 +13,13 @@ export const SlideSearch = ({ active }: { active: boolean }) => {
           Гибридный поиск данных (RAG)
         </h2>
 
-        {/* Основной контейнер */}
-        <div className="relative w-[800px] h-[500px]">
-          {/* Шаг 1: Пользовательский запрос (0-3 сек) */}
+        <div className="relative w-[900px] h-[600px]">
+          {/* Шаг 1: Пользовательский запрос (0-4 сек) */}
           <div 
-            className="absolute inset-0 flex items-start justify-center pt-12 animate-fade-in"
+            className="absolute top-0 left-1/2 -translate-x-1/2 animate-fade-in"
             style={{ animationDelay: "0s" }}
           >
-            <div className="bg-white/10 rounded-2xl p-6 backdrop-blur-sm max-w-2xl w-full">
+            <div className="bg-white/10 rounded-2xl p-6 backdrop-blur-sm w-[500px]">
               <div className="flex items-center gap-3">
                 <MessageCircle className="w-8 h-8 text-telegram-primary" />
                 <div className="flex-1">
@@ -34,128 +32,148 @@ export const SlideSearch = ({ active }: { active: boolean }) => {
             </div>
           </div>
 
-          {/* Шаг 2: Параллельная обработка (3-6 сек) */}
+          {/* Шаг 2: Параллельная обработка (4-8 сек) */}
           <div 
-            className="absolute inset-0 flex items-center justify-center gap-16 animate-fade-in"
-            style={{ animationDelay: "3s" }}
+            className="absolute top-40 inset-x-0 flex items-start justify-center gap-32 animate-fade-in"
+            style={{ animationDelay: "4s" }}
           >
             {/* Векторный поиск */}
-            <div className="space-y-4 bg-white/5 p-6 rounded-lg">
+            <div className="space-y-4 bg-white/5 p-6 rounded-lg w-[300px]">
               <div className="flex items-center gap-2 text-telegram-primary font-medium">
                 <Binary className="w-5 h-5" />
                 <span>Векторный поиск</span>
               </div>
-              <div className="space-y-2">
-                {['лекция', 'AI', 'время'].map((word, i) => (
+              <div className="space-y-3">
+                {['лекция', 'AI', 'время', 'следующая'].map((word, i) => (
                   <div
                     key={word}
-                    className="text-sm px-3 py-1 bg-white/10 rounded animate-pulse"
-                    style={{ animationDelay: `${3.5 + i * 0.2}s` }}
+                    className="text-sm px-3 py-2 bg-white/10 rounded animate-slide-up"
+                    style={{ animationDelay: `${4.5 + i * 0.5}s` }}
                   >
-                    {word} → [0.8, 0.2, 0.6]
+                    <div className="text-gray-400 mb-1">Токен: "{word}"</div>
+                    <div className="text-telegram-primary">
+                      [{Array.from({length: 3}, () => (Math.random() * 1).toFixed(2)).join(", ")}]
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Поиск по ключевым словам */}
-            <div className="space-y-4 bg-white/5 p-6 rounded-lg">
+            <div className="space-y-4 bg-white/5 p-6 rounded-lg w-[300px]">
               <div className="flex items-center gap-2 text-green-400 font-medium">
                 <Search className="w-5 h-5" />
                 <span>Ключевые слова</span>
               </div>
-              <div className="space-y-2">
-                {['следующая', 'лекция', 'AI'].map((word, i) => (
+              <div className="space-y-3">
+                {['следующая', 'лекция', 'AI', 'когда'].map((word, i) => (
                   <div
                     key={word}
-                    className="text-sm px-3 py-1 bg-white/10 rounded animate-pulse"
-                    style={{ animationDelay: `${3.5 + i * 0.2}s` }}
+                    className="text-sm px-3 py-2 bg-white/10 rounded animate-slide-up"
+                    style={{ animationDelay: `${4.5 + i * 0.5}s` }}
                   >
-                    match: "{word}"
+                    <div className="text-gray-400 mb-1">Слово: "{word}"</div>
+                    <div className="text-green-400">
+                      Совпадение: {Math.floor(Math.random() * 30 + 70)}%
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* Шаг 3: Поиск в базе данных (6-9 сек) */}
+          {/* Шаг 3: Поиск в базе данных (8-12 сек) */}
           <div 
-            className="absolute inset-0 flex items-center justify-center animate-fade-in"
-            style={{ animationDelay: "6s" }}
+            className="absolute bottom-40 left-1/2 -translate-x-1/2 animate-fade-in"
+            style={{ animationDelay: "8s" }}
           >
-            <div className="relative bg-white/5 p-6 rounded-lg w-[600px]">
+            <div className="relative bg-white/5 p-6 rounded-lg w-[700px]">
               <div className="absolute -top-3 -right-3">
                 <History className="w-6 h-6 text-telegram-primary animate-spin-slow" />
               </div>
               <div className="space-y-4">
                 <div className="text-sm text-gray-400">Поиск по базе данных...</div>
-                {[
-                  { score: 0.92, text: "Лекция по AI, аудитория 312", time: "Завтра, 14:30" },
-                  { score: 0.85, text: "Семинар по AI и ML", time: "Пятница, 16:00" },
-                  { score: 0.78, text: "Курс лекций по AI", time: "Каждый вторник" }
-                ].map((result, i) => (
-                  <div 
-                    key={i}
-                    className={`flex items-center justify-between p-3 rounded bg-white/10 animate-fade-in ${
-                      i === 0 ? 'border border-telegram-primary' : ''
-                    }`}
-                    style={{ animationDelay: `${7 + i * 0.5}s` }}
-                  >
-                    <div className="flex items-center gap-3">
-                      <FileText className="w-5 h-5 text-gray-400" />
-                      <div>
-                        <div className="text-sm">{result.text}</div>
-                        <div className="text-xs text-gray-400">{result.time}</div>
+                <div className="space-y-3">
+                  {[
+                    { score: 0.92, text: "Лекция по AI, аудитория 312", time: "Завтра, 14:30", details: "Основы машинного обучения" },
+                    { score: 0.85, text: "Семинар по AI и ML", time: "Пятница, 16:00", details: "Практическое занятие" },
+                    { score: 0.78, text: "Курс лекций по AI", time: "Каждый вторник", details: "Теория нейронных сетей" }
+                  ].map((result, i) => (
+                    <div 
+                      key={i}
+                      className={`p-4 rounded bg-white/10 animate-slide-up ${
+                        i === 0 ? 'border border-telegram-primary' : ''
+                      }`}
+                      style={{ animationDelay: `${9 + i * 1}s` }}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-start gap-3">
+                          <FileText className="w-5 h-5 text-gray-400 mt-1" />
+                          <div>
+                            <div className="text-sm font-medium">{result.text}</div>
+                            <div className="text-xs text-gray-400 mt-1">{result.time}</div>
+                            <div className="text-xs text-gray-500 mt-1">{result.details}</div>
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-end">
+                          <div className="text-xs text-telegram-primary font-medium">
+                            {(result.score * 100).toFixed(0)}% релевантность
+                          </div>
+                          <div className="mt-2 w-32 h-2 bg-white/10 rounded-full overflow-hidden">
+                            <div 
+                              className="h-full bg-telegram-primary rounded-full animate-width"
+                              style={{ 
+                                width: `${result.score * 100}%`,
+                                animationDelay: `${9.2 + i * 1}s`
+                              }}
+                            />
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <div className="text-xs text-telegram-primary">
-                      {(result.score * 100).toFixed(0)}% match
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Шаг 4: Генерация ответа (9-12 сек) */}
+          {/* Шаг 4: Генерация ответа (12-16 сек) */}
           <div 
-            className="absolute inset-0 flex items-center justify-center animate-fade-in"
-            style={{ animationDelay: "9s" }}
+            className="absolute bottom-0 left-1/2 -translate-x-1/2 animate-fade-in"
+            style={{ animationDelay: "12s" }}
           >
-            <div className="relative max-w-2xl w-full">
-              {/* Исходные данные */}
-              <div className="absolute -top-20 left-0 right-0 flex justify-between text-xs text-gray-400">
+            <div className="relative max-w-2xl w-full mb-8">
+              <div className="absolute -top-16 left-0 right-0 flex justify-between text-xs text-gray-400">
                 <div className="flex items-center gap-2">
                   <Binary className="w-4 h-4" />
                   <span>Векторное сходство: 92%</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Search className="w-4 h-4" />
-                  <span>Ключевые слова: 3/3</span>
+                  <span>Ключевые слова: 4/4</span>
                 </div>
               </div>
 
-              {/* Генерация ответа */}
               <div className="bg-white/10 rounded-2xl p-6 backdrop-blur-sm">
                 <div className="flex items-center gap-3 mb-4">
                   <Sparkles className="w-6 h-6 text-telegram-primary" />
                   <span className="text-lg font-medium">Генерация ответа</span>
                 </div>
-                <p className="text-lg leading-relaxed animate-typing">
-                  Следующая лекция по AI состоится завтра в 14:30 в аудитории 312.
+                <p className="text-lg leading-relaxed animate-typing-slow">
+                  Следующая лекция по AI состоится завтра в 14:30 в аудитории 312. Тема лекции: Основы машинного обучения.
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Финальный шаг: Результат (12-15 сек) */}
+          {/* Финальный шаг: Результат (16-20 сек) */}
           <div 
             className="absolute bottom-4 left-1/2 -translate-x-1/2 animate-fade-in"
-            style={{ animationDelay: "12s" }}
+            style={{ animationDelay: "16s" }}
           >
             <div className="flex items-center gap-2 text-sm text-telegram-primary">
               <MoveUpRight className="w-4 h-4" />
-              <span>Ответ сгенерирован за 0.8 секунды</span>
+              <span>Ответ сгенерирован за 1.2 секунды</span>
             </div>
           </div>
         </div>
@@ -170,7 +188,13 @@ export const SlideSearch = ({ active }: { active: boolean }) => {
         .animate-typing {
           overflow: hidden;
           white-space: nowrap;
-          animation: typing 1s steps(50);
+          animation: typing 2s steps(50);
+        }
+
+        .animate-typing-slow {
+          overflow: hidden;
+          white-space: nowrap;
+          animation: typing 3s steps(75);
         }
 
         @keyframes spin-slow {
@@ -180,6 +204,30 @@ export const SlideSearch = ({ active }: { active: boolean }) => {
 
         .animate-spin-slow {
           animation: spin-slow 2s linear infinite;
+        }
+
+        @keyframes slide-up {
+          from { 
+            transform: translateY(20px);
+            opacity: 0;
+          }
+          to { 
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
+
+        .animate-slide-up {
+          animation: slide-up 0.5s ease-out forwards;
+        }
+
+        @keyframes width-animation {
+          from { width: 0% }
+          to { width: var(--target-width) }
+        }
+
+        .animate-width {
+          animation: width-animation 1s ease-out forwards;
         }
 
         .cursor {
