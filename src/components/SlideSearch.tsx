@@ -33,7 +33,7 @@ export const SlideSearch = ({ active }: { active: boolean }) => {
 
           {/* Шаг 2: Параллельная обработка (4-8 сек) */}
           <div 
-            className="absolute top-32 inset-x-0 flex items-start justify-center gap-32 z-40 animate-fade-in"
+            className="absolute top-32 left-8 flex flex-col gap-4 z-40 animate-fade-in"
             style={{ animationDelay: "4s" }}
           >
             {/* Векторный поиск */}
@@ -83,10 +83,10 @@ export const SlideSearch = ({ active }: { active: boolean }) => {
 
           {/* Шаг 3: Поиск в базе данных (8-12 сек) */}
           <div 
-            className="absolute top-[350px] left-1/2 -translate-x-1/2 z-30 animate-fade-in"
+            className="absolute top-32 right-8 z-30 animate-fade-in"
             style={{ animationDelay: "8s" }}
           >
-            <div className="relative bg-white/5 p-6 rounded-lg w-[800px]">
+            <div className="relative bg-white/5 p-6 rounded-lg w-[600px]">
               <div className="absolute -top-3 -right-3">
                 <History className="w-6 h-6 text-telegram-primary animate-spin-slow" />
               </div>
