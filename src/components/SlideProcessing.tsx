@@ -1,5 +1,5 @@
 import { Slide } from "./Slide";
-import { Binary, FileText } from "lucide-react";
+import { FileText } from "lucide-react";
 
 export const SlideProcessing = ({ active }: { active: boolean }) => {
   return (
@@ -24,11 +24,11 @@ export const SlideProcessing = ({ active }: { active: boolean }) => {
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="flex items-center gap-4 animate-slide-right"
+                  className="flex items-center gap-4"
                   style={{ 
-                    animationDelay: `${1 + i * 0.3}s`,
                     opacity: 0,
                     animation: "slide-right 0.5s ease-out forwards",
+                    animationDelay: `${1 + i * 0.3}s`,
                     position: "relative"
                   }}
                 >
@@ -37,13 +37,19 @@ export const SlideProcessing = ({ active }: { active: boolean }) => {
                     <div className="h-4 bg-white/20 rounded w-3/4" />
                     <div className="h-4 bg-white/10 rounded w-1/2" />
                   </div>
-                  <div 
-                    className="absolute right-0 w-4 h-4 bg-telegram-primary rounded-full opacity-0"
-                    style={{
-                      animation: "text-to-point 0.5s ease-out forwards",
-                      animationDelay: `${2.5 + i * 0.3}s`
-                    }}
-                  />
+                  <div className="absolute right-0 flex items-center gap-2 opacity-0"
+                       style={{
+                         animation: "show-coordinates 0.5s ease-out forwards",
+                         animationDelay: `${2 + i * 0.3}s`
+                       }}>
+                    <span className="text-sm text-telegram-primary">
+                      ({Math.random().toFixed(2)}, {Math.random().toFixed(2)}, {Math.random().toFixed(2)})
+                    </span>
+                    <div className="w-3 h-3 bg-telegram-primary rounded-full"
+                         style={{
+                           animation: "pulse 2s infinite"
+                         }} />
+                  </div>
                 </div>
               ))}
             </div>
@@ -274,6 +280,17 @@ export const SlideProcessing = ({ active }: { active: boolean }) => {
           100% {
             transform: scale(1);
             opacity: 1;
+          }
+        }
+
+        @keyframes show-coordinates {
+          0% {
+            opacity: 0;
+            transform: translateX(20px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateX(0);
           }
         }
       `}</style>
