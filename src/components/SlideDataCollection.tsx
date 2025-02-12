@@ -6,7 +6,6 @@ export const SlideDataCollection = ({ active }: { active: boolean }) => {
   return (
     <Slide active={active} className="bg-gradient-to-br from-gray-900 to-gray-800">
       <div className="flex flex-col items-center justify-center h-full text-white space-y-4">
-        {/* Заголовок с отложенной анимацией */}
         <h2
           className="text-3xl font-bold animate-fade-in"
           style={{ animationDelay: "0.5s" }}
@@ -20,7 +19,7 @@ export const SlideDataCollection = ({ active }: { active: boolean }) => {
           <div className="flex items-center gap-2 bg-white/10 p-2 border-b border-white/10">
             <Globe className="w-4 h-4 text-gray-400" />
             <div className="flex-1 bg-white/5 rounded px-2 py-1 text-sm">
-              university.edu
+              iitu.edu.kz
             </div>
           </div>
 
@@ -28,33 +27,63 @@ export const SlideDataCollection = ({ active }: { active: boolean }) => {
           <div className="p-6 space-y-6">
             {/* Хедер сайта */}
             <div 
-              className="h-12 bg-white/10 rounded animate-fade-in"
+              className="h-12 bg-white/10 rounded animate-fade-in flex items-center px-6"
               style={{ animationDelay: "1s" }}
-            />
+            >
+              <span className="text-xl font-bold">International IT University</span>
+            </div>
 
             {/* Основной контент */}
             <div className="grid grid-cols-3 gap-4">
               {/* Навигация */}
               <div className="space-y-2">
-                {[1, 2, 3].map((i) => (
+                <div className="font-medium text-sm text-gray-400 mb-4">Меню</div>
+                {[
+                  "Об университете",
+                  "Поступление",
+                  "Факультеты",
+                  "Наука",
+                  "Студентам",
+                  "Контакты"
+                ].map((item, i) => (
                   <div
                     key={i}
-                    className="h-8 bg-white/10 rounded w-3/4 animate-fade-in"
+                    className="h-8 bg-white/10 rounded px-3 flex items-center animate-fade-in hover:bg-white/20 transition-colors cursor-pointer"
                     style={{ animationDelay: `${1 + i * 0.2}s` }}
-                  />
+                  >
+                    {item}
+                  </div>
                 ))}
               </div>
 
               {/* Центральная колонка с новостями */}
               <div className="col-span-2 space-y-4">
-                {[1, 2, 3].map((i) => (
+                <div className="font-medium text-sm text-gray-400 mb-2">Новости и события</div>
+                {[
+                  {
+                    title: "День открытых дверей IITU 2024",
+                    desc: "Приглашаем абитуриентов и их родителей на день открытых дверей"
+                  },
+                  {
+                    title: "Международная научная конференция",
+                    desc: "Открыт прием заявок на участие в конференции AI & Big Data"
+                  },
+                  {
+                    title: "Встреча с работодателями",
+                    desc: "Ведущие IT компании проведут презентации для студентов"
+                  }
+                ].map((item, i) => (
                   <div
                     key={i}
                     className="group relative space-y-2 bg-white/5 p-4 rounded animate-fade-in cursor-pointer"
                     style={{ animationDelay: `${2 + i * 0.3}s` }}
                   >
-                    <div className="h-4 bg-white/20 rounded w-3/4 group-hover:bg-telegram-primary/30 transition-colors" />
-                    <div className="h-4 bg-white/10 rounded w-1/2 group-hover:bg-telegram-primary/20 transition-colors" />
+                    <div className="text-lg font-medium group-hover:text-telegram-primary transition-colors">
+                      {item.title}
+                    </div>
+                    <div className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
+                      {item.desc}
+                    </div>
                     {/* Анимация выделения при наведении */}
                     <div className="absolute inset-0 border border-transparent group-hover:border-telegram-primary/50 rounded transition-colors" />
                   </div>
@@ -99,7 +128,7 @@ export const SlideDataCollection = ({ active }: { active: boolean }) => {
             <div className="flex items-center gap-4">
               <FolderOpen className="w-12 h-12 text-telegram-primary" />
               {/* Анимация добавления файлов */}
-              <div className="flex -space-x-4">
+              <div className="flex gap-4">
                 {[1, 2, 3, 4].map((i) => (
                   <div
                     key={i}
@@ -113,14 +142,6 @@ export const SlideDataCollection = ({ active }: { active: boolean }) => {
             </div>
           </div>
         </div>
-
-        {/* Сцена 4: Финальное подтверждение (12-15 сек) */}
-        <p
-          className="text-lg text-telegram-primary animate-fade-in text-center"
-          style={{ animationDelay: "12s" }}
-        >
-          Данные собраны и готовы к обработке
-        </p>
       </div>
 
       <style>{`
