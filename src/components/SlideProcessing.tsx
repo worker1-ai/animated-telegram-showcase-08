@@ -10,14 +10,14 @@ export const SlideProcessing = ({ active }: { active: boolean }) => {
           className="text-3xl font-bold animate-fade-in"
           style={{ animationDelay: "0.5s" }}
         >
-          Data Processing & Embedding
+          Обработка данных и векторизация
         </h2>
         <div
           className="relative w-96 h-96 perspective-1000"
           style={{ animationDelay: "1s" }}
         >
           <div className="animate-rotate3d">
-            {/* 3D Vector points visualization */}
+            {/* Визуализация векторных точек в 3D */}
             {Array.from({ length: 20 }).map((_, i) => (
               <div
                 key={i}
@@ -36,7 +36,7 @@ export const SlideProcessing = ({ active }: { active: boolean }) => {
           style={{ animationDelay: "2s" }}
         >
           <Binary className="w-6 h-6" />
-          <span className="text-sm opacity-75">Vector Transformation</span>
+          <span className="text-sm opacity-75">Векторное преобразование</span>
         </div>
       </div>
     </Slide>

@@ -9,7 +9,7 @@ export const SlideIntro = ({ active }: { active: boolean }) => {
         <div className="animate-fade-in" style={{ animationDelay: "0.5s" }}>
           <img
             src="/university-logo.png"
-            alt="University Logo"
+            alt="Логотип университета"
             className="w-32 h-32 object-contain"
           />
         </div>
@@ -23,13 +23,13 @@ export const SlideIntro = ({ active }: { active: boolean }) => {
           className="text-4xl font-bold animate-fade-in"
           style={{ animationDelay: "1.5s" }}
         >
-          University Telegram Bot
+          Телеграм-бот университета
         </h1>
         <p
           className="text-xl opacity-90 animate-fade-in text-center max-w-md"
           style={{ animationDelay: "2s" }}
         >
-          Your AI-powered assistant for instant access to university information
+          Ваш AI-ассистент для мгновенного доступа к информации университета
         </p>
       </div>
     </Slide>

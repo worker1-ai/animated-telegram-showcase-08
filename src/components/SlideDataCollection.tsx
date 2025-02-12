@@ -10,14 +10,14 @@ export const SlideDataCollection = ({ active }: { active: boolean }) => {
           className="text-3xl font-bold animate-fade-in"
           style={{ animationDelay: "0.5s" }}
         >
-          Data Collection
+          Сбор данных
         </h2>
         <div className="relative w-96 h-64 bg-white/10 rounded-lg backdrop-blur-sm overflow-hidden">
           <div
             className="absolute inset-0 animate-slide-in"
             style={{ animationDelay: "1s" }}
           >
-            {/* Simulated webpage content */}
+            {/* Симуляция контента веб-страницы */}
             <div className="p-4 space-y-2">
               <div className="h-4 bg-white/20 rounded w-3/4"></div>
               <div className="h-4 bg-white/20 rounded w-1/2"></div>
