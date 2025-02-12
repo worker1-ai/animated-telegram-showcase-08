@@ -1,22 +1,21 @@
-
 import { Slide } from "./Slide";
 import { Search, MessageCircle, Binary, Sparkles, History, MoveUpRight, FileText } from "lucide-react";
 
 export const SlideSearch = ({ active }: { active: boolean }) => {
   return (
     <Slide active={active} className="bg-gradient-to-br from-gray-900 to-gray-800">
-      <div className="flex flex-col items-center justify-center h-full text-white space-y-8">
+      <div className="flex flex-col items-center justify-center h-full text-white">
         <h2
-          className="text-3xl font-bold animate-fade-in"
+          className="text-3xl font-bold animate-fade-in mb-12"
           style={{ animationDelay: "0.5s" }}
         >
           Гибридный поиск данных (RAG)
         </h2>
 
-        <div className="relative w-[900px] h-[600px]">
+        <div className="relative w-[1000px] h-[700px]">
           {/* Шаг 1: Пользовательский запрос (0-4 сек) */}
           <div 
-            className="absolute top-0 left-1/2 -translate-x-1/2 animate-fade-in"
+            className="absolute top-0 left-1/2 -translate-x-1/2 z-50 animate-fade-in"
             style={{ animationDelay: "0s" }}
           >
             <div className="bg-white/10 rounded-2xl p-6 backdrop-blur-sm w-[500px]">
@@ -34,11 +33,11 @@ export const SlideSearch = ({ active }: { active: boolean }) => {
 
           {/* Шаг 2: Параллельная обработка (4-8 сек) */}
           <div 
-            className="absolute top-40 inset-x-0 flex items-start justify-center gap-32 animate-fade-in"
+            className="absolute top-32 inset-x-0 flex items-start justify-center gap-32 z-40 animate-fade-in"
             style={{ animationDelay: "4s" }}
           >
             {/* Векторный поиск */}
-            <div className="space-y-4 bg-white/5 p-6 rounded-lg w-[300px]">
+            <div className="space-y-4 bg-white/5 p-6 rounded-lg w-[320px]">
               <div className="flex items-center gap-2 text-telegram-primary font-medium">
                 <Binary className="w-5 h-5" />
                 <span>Векторный поиск</span>
@@ -60,7 +59,7 @@ export const SlideSearch = ({ active }: { active: boolean }) => {
             </div>
 
             {/* Поиск по ключевым словам */}
-            <div className="space-y-4 bg-white/5 p-6 rounded-lg w-[300px]">
+            <div className="space-y-4 bg-white/5 p-6 rounded-lg w-[320px]">
               <div className="flex items-center gap-2 text-green-400 font-medium">
                 <Search className="w-5 h-5" />
                 <span>Ключевые слова</span>
@@ -84,10 +83,10 @@ export const SlideSearch = ({ active }: { active: boolean }) => {
 
           {/* Шаг 3: Поиск в базе данных (8-12 сек) */}
           <div 
-            className="absolute bottom-40 left-1/2 -translate-x-1/2 animate-fade-in"
+            className="absolute top-[350px] left-1/2 -translate-x-1/2 z-30 animate-fade-in"
             style={{ animationDelay: "8s" }}
           >
-            <div className="relative bg-white/5 p-6 rounded-lg w-[700px]">
+            <div className="relative bg-white/5 p-6 rounded-lg w-[800px]">
               <div className="absolute -top-3 -right-3">
                 <History className="w-6 h-6 text-telegram-primary animate-spin-slow" />
               </div>
@@ -139,10 +138,10 @@ export const SlideSearch = ({ active }: { active: boolean }) => {
 
           {/* Шаг 4: Генерация ответа (12-16 сек) */}
           <div 
-            className="absolute bottom-0 left-1/2 -translate-x-1/2 animate-fade-in"
+            className="absolute bottom-16 left-1/2 -translate-x-1/2 z-20 animate-fade-in"
             style={{ animationDelay: "12s" }}
           >
-            <div className="relative max-w-2xl w-full mb-8">
+            <div className="relative max-w-2xl w-full">
               <div className="absolute -top-16 left-0 right-0 flex justify-between text-xs text-gray-400">
                 <div className="flex items-center gap-2">
                   <Binary className="w-4 h-4" />
@@ -168,7 +167,7 @@ export const SlideSearch = ({ active }: { active: boolean }) => {
 
           {/* Финальный шаг: Результат (16-20 сек) */}
           <div 
-            className="absolute bottom-4 left-1/2 -translate-x-1/2 animate-fade-in"
+            className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 animate-fade-in"
             style={{ animationDelay: "16s" }}
           >
             <div className="flex items-center gap-2 text-sm text-telegram-primary">
