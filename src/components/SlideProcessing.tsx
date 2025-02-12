@@ -1,5 +1,5 @@
 import { Slide } from "./Slide";
-import { FileText } from "lucide-react";
+import { Binary, FileText } from "lucide-react";
 
 export const SlideProcessing = ({ active }: { active: boolean }) => {
   return (
@@ -28,7 +28,8 @@ export const SlideProcessing = ({ active }: { active: boolean }) => {
                   style={{ 
                     animationDelay: `${1 + i * 0.3}s`,
                     opacity: 0,
-                    animation: "slide-right 0.5s ease-out forwards"
+                    animation: "slide-right 0.5s ease-out forwards",
+                    position: "relative"
                   }}
                 >
                   <FileText className="w-6 h-6 text-telegram-primary shrink-0" />
@@ -36,6 +37,13 @@ export const SlideProcessing = ({ active }: { active: boolean }) => {
                     <div className="h-4 bg-white/20 rounded w-3/4" />
                     <div className="h-4 bg-white/10 rounded w-1/2" />
                   </div>
+                  <div 
+                    className="absolute right-0 w-4 h-4 bg-telegram-primary rounded-full opacity-0"
+                    style={{
+                      animation: "text-to-point 0.5s ease-out forwards",
+                      animationDelay: `${2.5 + i * 0.3}s`
+                    }}
+                  />
                 </div>
               ))}
             </div>
@@ -44,46 +52,41 @@ export const SlideProcessing = ({ active }: { active: boolean }) => {
           <div 
             className="absolute inset-0 flex items-center justify-center opacity-0"
             style={{ 
-              animationDelay: "3s",
+              animationDelay: "4s",
               animation: "fade-in 0.5s ease-out forwards",
               animationFillMode: "forwards"
             }}
           >
-            <div className="grid grid-cols-4 gap-8">
+            <div className="relative">
               {Array.from({ length: 12 }).map((_, i) => (
                 <div
                   key={i}
-                  className="relative"
+                  className="absolute"
+                  style={{
+                    left: `${Math.cos(i * Math.PI/6) * 150}px`,
+                    top: `${Math.sin(i * Math.PI/6) * 150}px`,
+                  }}
                 >
                   <div 
-                    className="w-4 h-4 bg-telegram-primary rounded-full animate-scale-up"
+                    className="w-4 h-4 bg-telegram-primary rounded-full"
                     style={{ 
-                      animationDelay: `${3.5 + i * 0.2}s`,
                       opacity: 0,
-                      animation: "scale-up 0.5s ease-out forwards",
+                      animation: "point-appear 0.5s ease-out forwards",
+                      animationDelay: `${4.2 + i * 0.1}s`
                     }}
                   />
                   {i > 0 && (
                     <div 
-                      className="absolute inset-0 w-full h-full"
+                      className="absolute top-1/2 left-1/2 h-px bg-telegram-primary/20"
                       style={{
-                        animation: "fade-in 0.3s ease-out forwards",
-                        animationDelay: `${4 + i * 0.2}s`,
-                        opacity: 0
+                        width: `${Math.sqrt(2) * 150}px`,
+                        transform: `rotate(${i * 30}deg)`,
+                        transformOrigin: "0 0",
+                        opacity: 0,
+                        animation: "line-appear 0.3s ease-out forwards",
+                        animationDelay: `${4.5 + i * 0.1}s`
                       }}
-                    >
-                      <svg className="absolute top-1/2 left-1/2 -translate-x-full -translate-y-1/2 w-8 h-0.5">
-                        <line
-                          x1="0"
-                          y1="1"
-                          x2="100%"
-                          y2="1"
-                          stroke="rgba(34, 158, 217, 0.3)"
-                          strokeWidth="2"
-                          strokeDasharray="4 2"
-                        />
-                      </svg>
-                    </div>
+                    />
                   )}
                 </div>
               ))}
@@ -184,6 +187,49 @@ export const SlideProcessing = ({ active }: { active: boolean }) => {
       </div>
 
       <style>{`
+        @keyframes text-to-point {
+          0% {
+            transform: scale(0) translateX(0);
+            opacity: 0;
+          }
+          50% {
+            transform: scale(1.2) translateX(-50px);
+            opacity: 0.7;
+          }
+          100% {
+            transform: scale(1) translateX(-100px);
+            opacity: 1;
+          }
+        }
+
+        @keyframes point-appear {
+          0% {
+            transform: scale(0);
+            opacity: 0;
+          }
+          70% {
+            transform: scale(1.2);
+            opacity: 0.7;
+          }
+          100% {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+
+        @keyframes line-appear {
+          0% {
+            opacity: 0;
+            transform-origin: 0 0;
+            transform: scaleX(0) rotate(0deg);
+          }
+          100% {
+            opacity: 1;
+            transform-origin: 0 0;
+            transform: scaleX(1) rotate(calc(var(--rotation) * 1deg));
+          }
+        }
+
         @keyframes slide-right {
           0% { 
             transform: translateX(-20px);
@@ -216,21 +262,6 @@ export const SlideProcessing = ({ active }: { active: boolean }) => {
           perspective: 1000px;
         }
 
-        @keyframes scale-up {
-          0% { 
-            transform: scale(0);
-            opacity: 0;
-          }
-          50% {
-            transform: scale(1.2);
-            opacity: 0.7;
-          }
-          100% { 
-            transform: scale(1);
-            opacity: 1;
-          }
-        }
-
         @keyframes pulse {
           0% {
             transform: scale(1);
@@ -244,10 +275,6 @@ export const SlideProcessing = ({ active }: { active: boolean }) => {
             transform: scale(1);
             opacity: 1;
           }
-        }
-
-        .animate-scale-up {
-          animation: scale-up 0.5s ease-out forwards;
         }
       `}</style>
     </Slide>
