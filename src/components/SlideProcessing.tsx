@@ -1,8 +1,61 @@
 
 import { Slide } from "./Slide";
-import { FileText } from "lucide-react";
+import { useState, useEffect } from "react";
+
+const WORDS = [
+  { text: "Лекция", group: "schedule", color: "rgb(74, 222, 128)" },
+  { text: "Экзамен", group: "schedule", color: "rgb(74, 222, 128)" },
+  { text: "Семинар", group: "schedule", color: "rgb(74, 222, 128)" },
+  { text: "Новость", group: "news", color: "rgb(96, 165, 250)" },
+  { text: "Анонс", group: "news", color: "rgb(96, 165, 250)" },
+  { text: "Событие", group: "news", color: "rgb(96, 165, 250)" },
+  { text: "Документ", group: "docs", color: "rgb(192, 132, 252)" },
+  { text: "Приказ", group: "docs", color: "rgb(192, 132, 252)" },
+  { text: "Справка", group: "docs", color: "rgb(192, 132, 252)" }
+];
 
 export const SlideProcessing = ({ active }: { active: boolean }) => {
+  const [words, setWords] = useState(WORDS.map(word => ({
+    ...word,
+    x: 0,
+    y: 0,
+    z: 0,
+    opacity: 0,
+    scale: 0
+  })));
+
+  useEffect(() => {
+    if (!active) return;
+
+    // Анимация появления и распределения слов
+    words.forEach((word, index) => {
+      setTimeout(() => {
+        setWords(prev => prev.map((w, i) => {
+          if (i === index) {
+            // Распределяем слова по группам в разных частях 3D пространства
+            const angle = (i * (360 / WORDS.length)) * (Math.PI / 180);
+            const radius = 150;
+            const groupOffset = {
+              schedule: { x: -100, y: -100, z: 50 },
+              news: { x: 100, y: -100, z: 50 },
+              docs: { x: 0, y: 100, z: 50 }
+            }[w.group];
+
+            return {
+              ...w,
+              x: Math.cos(angle) * radius + groupOffset.x,
+              y: Math.sin(angle) * radius + groupOffset.y,
+              z: groupOffset.z + Math.random() * 50,
+              opacity: 1,
+              scale: 1
+            };
+          }
+          return w;
+        }));
+      }, 500 + index * 300);
+    });
+  }, [active]);
+
   return (
     <Slide active={active} className="bg-gradient-to-br from-gray-800 to-gray-900">
       <div className="flex flex-col items-center justify-center h-full text-white space-y-8">
@@ -13,178 +66,81 @@ export const SlideProcessing = ({ active }: { active: boolean }) => {
           Векторизация данных
         </h2>
 
-        <div className="relative w-[800px] h-[500px]">
-          {/* Сцена 1: Исходные текстовые данные */}
+        <div className="relative w-[800px] h-[500px] perspective-1000">
           <div 
-            className="absolute inset-0 flex flex-col items-center justify-center animate-fade-in opacity-0"
-            style={{ 
-              animationDelay: "0.5s",
-              animationFillMode: "forwards"
+            className="relative w-full h-full animate-rotate3d"
+            style={{
+              transformStyle: 'preserve-3d'
             }}
           >
-            <div className="bg-white/5 rounded-lg p-8 backdrop-blur-sm w-full max-w-2xl space-y-4">
-              {[1, 2, 3].map((i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-4"
+            {words.map((word, index) => (
+              <div
+                key={index}
+                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap"
+                style={{
+                  transform: `translate3d(${word.x}px, ${word.y}px, ${word.z}px) scale(${word.scale})`,
+                  opacity: word.opacity,
+                  color: word.color,
+                  transition: 'all 1s cubic-bezier(0.4, 0, 0.2, 1)',
+                  fontSize: '1.2rem',
+                  textShadow: '0 0 10px rgba(0,0,0,0.5)'
+                }}
+              >
+                <div className="relative">
+                  <span className="relative z-10">{word.text}</span>
+                  <div 
+                    className="absolute inset-0 blur-sm opacity-50"
+                    style={{ backgroundColor: word.color }}
+                  />
+                </div>
+                <div 
+                  className="absolute w-2 h-2 rounded-full -translate-x-1 -translate-y-1 top-1/2 left-1/2"
                   style={{ 
-                    opacity: 0,
-                    animation: "slide-right 0.5s ease-out forwards",
-                    animationDelay: `${1 + i * 0.3}s`,
-                    position: "relative"
+                    backgroundColor: word.color,
+                    boxShadow: `0 0 10px ${word.color}`
                   }}
-                >
-                  <FileText className="w-6 h-6 text-telegram-primary shrink-0" />
-                  <div className="space-y-2 flex-1">
-                    <div className="h-4 bg-white/20 rounded w-3/4" />
-                    <div className="h-4 bg-white/10 rounded w-1/2" />
-                  </div>
-                  <div className="absolute -right-32 flex items-center gap-2 opacity-0"
-                       style={{
-                         animation: "show-coordinates 0.5s ease-out forwards",
-                         animationDelay: `${2 + i * 0.3}s`
-                       }}>
-                    <span className="text-sm text-telegram-primary">
-                      ({Math.random().toFixed(2)}, {Math.random().toFixed(2)}, {Math.random().toFixed(2)})
-                    </span>
-                    <div className="w-3 h-3 bg-telegram-primary rounded-full"
-                         style={{
-                           animation: "pulse 2s infinite"
-                         }} />
-                  </div>
-                </div>
-              ))}
-            </div>
+                />
+              </div>
+            ))}
           </div>
 
-          {/* Сцена 2: Векторное пространство (убрано, так как это промежуточная сцена) */}
-
-          {/* Сцена 3: 3D Кластеризация */}
+          {/* Координатные линии */}
           <div 
-            className="absolute inset-0 perspective-1000 opacity-0"
-            style={{ 
-              animationDelay: "6s",
-              animation: "fade-in 0.5s ease-out forwards",
-              animationFillMode: "forwards"
+            className="absolute inset-0"
+            style={{
+              transformStyle: 'preserve-3d',
+              opacity: 0.2
             }}
           >
-            <div className="relative w-full h-full">
-              {/* Кластер: Новости */}
-              <div className="absolute left-1/4 top-1/4 -translate-x-1/2 -translate-y-1/2">
-                <div className="relative bg-black/20 backdrop-blur-sm p-4 rounded-lg">
-                  <div className="grid grid-cols-3 gap-2">
-                    {Array.from({ length: 6 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className="w-3 h-3 bg-blue-400 rounded-full animate-pulse"
-                        style={{ 
-                          animation: "pulse 2s infinite, fade-in 0.5s forwards",
-                          animationDelay: `${6 + i * 0.2}s`
-                        }}
-                      />
-                    ))}
-                  </div>
-                  <div className="mt-2 text-blue-400 text-center">
-                    Новости
-                  </div>
-                </div>
-              </div>
-
-              {/* Кластер: Расписание */}
-              <div className="absolute right-1/4 top-1/4 translate-x-1/2 -translate-y-1/2">
-                <div className="relative bg-black/20 backdrop-blur-sm p-4 rounded-lg">
-                  <div className="grid grid-cols-3 gap-2">
-                    {Array.from({ length: 6 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className="w-3 h-3 bg-green-400 rounded-full animate-pulse"
-                        style={{ 
-                          animation: "pulse 2s infinite, fade-in 0.5s forwards",
-                          animationDelay: `${7 + i * 0.2}s`
-                        }}
-                      />
-                    ))}
-                  </div>
-                  <div className="mt-2 text-green-400 text-center">
-                    Расписание
-                  </div>
-                </div>
-              </div>
-
-              {/* Кластер: Документы */}
-              <div className="absolute left-1/2 bottom-1/4 -translate-x-1/2 translate-y-1/2">
-                <div className="relative bg-black/20 backdrop-blur-sm p-4 rounded-lg">
-                  <div className="grid grid-cols-3 gap-2">
-                    {Array.from({ length: 6 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className="w-3 h-3 bg-purple-400 rounded-full animate-pulse"
-                        style={{ 
-                          animation: "pulse 2s infinite, fade-in 0.5s forwards",
-                          animationDelay: `${8 + i * 0.2}s`
-                        }}
-                      />
-                    ))}
-                  </div>
-                  <div className="mt-2 text-purple-400 text-center">
-                    Документы
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Финальное сообщение */}
-          <div 
-            className="absolute inset-0 flex items-center justify-center animate-fade-in opacity-0"
-            style={{ 
-              animationDelay: "18s",
-              animationFillMode: "forwards"
-            }}
-          >
-            <p className="text-xl text-telegram-primary text-center bg-black/20 backdrop-blur-sm px-6 py-3 rounded-lg">
-              Векторизация завершена
-            </p>
+            {/* X axis */}
+            <div className="absolute left-0 top-1/2 w-full h-px bg-white" />
+            {/* Y axis */}
+            <div className="absolute top-0 left-1/2 w-px h-full bg-white" />
+            {/* Z axis (diagonal line for perspective) */}
+            <div 
+              className="absolute left-1/2 top-1/2 w-px h-[200px] bg-white origin-top"
+              style={{ transform: 'rotateX(-45deg)' }}
+            />
           </div>
         </div>
       </div>
 
       <style>{`
-        @keyframes slide-right {
-          0% { 
-            transform: translateX(-20px);
-            opacity: 0;
+        @keyframes rotate3d {
+          0% {
+            transform: rotateX(20deg) rotateY(0deg);
           }
-          100% { 
-            transform: translateX(0);
-            opacity: 1;
+          100% {
+            transform: rotateX(20deg) rotateY(360deg);
           }
         }
 
-        @keyframes pulse {
-          0% {
-            transform: scale(1);
-            opacity: 1;
-          }
-          50% {
-            transform: scale(1.1);
-            opacity: 0.8;
-          }
-          100% {
-            transform: scale(1);
-            opacity: 1;
-          }
+        .animate-rotate3d {
+          animation: rotate3d 20s linear infinite;
         }
 
-        @keyframes show-coordinates {
-          0% {
-            opacity: 0;
-            transform: translateX(20px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateX(0);
-          }
+        .perspective-1000 {
+          perspective: 1000px;
         }
       `}</style>
     </Slide>
