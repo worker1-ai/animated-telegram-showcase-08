@@ -1,3 +1,4 @@
+
 import { Slide } from "./Slide";
 import { FileText } from "lucide-react";
 
@@ -13,6 +14,7 @@ export const SlideProcessing = ({ active }: { active: boolean }) => {
         </h2>
 
         <div className="relative w-[800px] h-[500px]">
+          {/* Сцена 1: Исходные текстовые данные */}
           <div 
             className="absolute inset-0 flex flex-col items-center justify-center animate-fade-in opacity-0"
             style={{ 
@@ -55,12 +57,14 @@ export const SlideProcessing = ({ active }: { active: boolean }) => {
             </div>
           </div>
 
+          {/* Сцена 2: Векторное пространство */}
           <div 
             className="absolute inset-0 flex items-center justify-center opacity-0"
             style={{ 
               animationDelay: "4s",
               animation: "fade-in 0.5s ease-out forwards",
-              animationFillMode: "forwards"
+              animationFillMode: "forwards",
+              zIndex: 10
             }}
           >
             <div className="relative">
@@ -99,6 +103,7 @@ export const SlideProcessing = ({ active }: { active: boolean }) => {
             </div>
           </div>
 
+          {/* Сцена 3: 3D Кластеризация */}
           <div 
             className="absolute inset-0 perspective-1000 opacity-0"
             style={{ 
@@ -108,14 +113,15 @@ export const SlideProcessing = ({ active }: { active: boolean }) => {
             }}
           >
             <div className="relative w-full h-full animate-rotate3d">
-              <div className="absolute left-1/4 top-1/3 -translate-x-1/2 -translate-y-1/2">
+              {/* Кластер: Новости */}
+              <div className="absolute left-1/4 top-1/4 -translate-x-1/2 -translate-y-1/2">
                 <div className="relative">
                   {Array.from({ length: 8 }).map((_, i) => (
                     <div key={i}>
                       <div
                         className="absolute w-3 h-3 bg-blue-400 rounded-full animate-pulse"
                         style={{ 
-                          transform: `translate3d(${Math.cos(i * Math.PI/4) * 50}px, ${Math.sin(i * Math.PI/4) * 50}px, ${Math.sin(i * Math.PI/3) * 30}px)`,
+                          transform: `translate3d(${Math.cos(i * Math.PI/4) * 40}px, ${Math.sin(i * Math.PI/4) * 40}px, ${Math.sin(i * Math.PI/3) * 30}px)`,
                           animation: "pulse 2s infinite, fade-in 0.5s forwards",
                           animationDelay: `${6 + i * 0.2}s`
                         }}
@@ -124,7 +130,7 @@ export const SlideProcessing = ({ active }: { active: boolean }) => {
                         <div
                           className="absolute w-full h-full"
                           style={{
-                            transform: `translate3d(${Math.cos(i * Math.PI/4) * 25}px, ${Math.sin(i * Math.PI/4) * 25}px, ${Math.sin(i * Math.PI/3) * 15}px)`,
+                            transform: `translate3d(${Math.cos(i * Math.PI/4) * 20}px, ${Math.sin(i * Math.PI/4) * 20}px, ${Math.sin(i * Math.PI/3) * 15}px)`,
                             animation: "fade-in 0.5s forwards",
                             animationDelay: `${6.5 + i * 0.2}s`
                           }}
@@ -140,14 +146,15 @@ export const SlideProcessing = ({ active }: { active: boolean }) => {
                 </div>
               </div>
 
-              <div className="absolute right-1/4 top-1/3 translate-x-1/2 -translate-y-1/2">
+              {/* Кластер: Расписание */}
+              <div className="absolute right-1/4 top-1/4 translate-x-1/2 -translate-y-1/2">
                 <div className="relative">
                   {Array.from({ length: 8 }).map((_, i) => (
                     <div
                       key={i}
                       className="absolute w-3 h-3 bg-green-400 rounded-full animate-pulse"
                       style={{ 
-                        transform: `translate3d(${Math.cos(i * Math.PI/4) * 40}px, ${Math.sin(i * Math.PI/4) * 40}px, ${Math.cos(i * Math.PI/3) * 30}px)`,
+                        transform: `translate3d(${Math.cos(i * Math.PI/4) * 30}px, ${Math.sin(i * Math.PI/4) * 30}px, ${Math.cos(i * Math.PI/3) * 30}px)`,
                         animationDelay: `${7 + i * 0.2}s`
                       }}
                     />
@@ -158,6 +165,7 @@ export const SlideProcessing = ({ active }: { active: boolean }) => {
                 </div>
               </div>
 
+              {/* Кластер: Документы */}
               <div className="absolute left-1/2 bottom-1/4 -translate-x-1/2 translate-y-1/2">
                 <div className="relative">
                   {Array.from({ length: 8 }).map((_, i) => (
@@ -165,7 +173,7 @@ export const SlideProcessing = ({ active }: { active: boolean }) => {
                       key={i}
                       className="absolute w-3 h-3 bg-purple-400 rounded-full animate-pulse"
                       style={{ 
-                        transform: `translate3d(${Math.cos(i * Math.PI/4) * 45}px, ${Math.sin(i * Math.PI/4) * 45}px, ${Math.sin(i * Math.PI/2) * 30}px)`,
+                        transform: `translate3d(${Math.cos(i * Math.PI/4) * 35}px, ${Math.sin(i * Math.PI/4) * 35}px, ${Math.sin(i * Math.PI/2) * 30}px)`,
                         animationDelay: `${8 + i * 0.2}s`
                       }}
                     />
@@ -178,6 +186,7 @@ export const SlideProcessing = ({ active }: { active: boolean }) => {
             </div>
           </div>
 
+          {/* Финальное сообщение */}
           <div 
             className="absolute inset-0 flex items-center justify-center animate-fade-in opacity-0"
             style={{ 
