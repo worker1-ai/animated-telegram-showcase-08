@@ -40,8 +40,11 @@ export const SlideProcessing = ({ active }: { active: boolean }) => {
 
           {/* Сцена 2: Преобразование в точки (3-6 сек) */}
           <div 
-            className="absolute inset-0 flex items-center justify-center animate-fade-in"
-            style={{ animationDelay: "3s" }}
+            className="absolute inset-0 flex items-center justify-center animate-fade-in opacity-0"
+            style={{ 
+              animationDelay: "3s",
+              animationFillMode: "forwards"
+            }}
           >
             <div className="grid grid-cols-4 gap-8">
               {Array.from({ length: 12 }).map((_, i) => (
@@ -59,19 +62,23 @@ export const SlideProcessing = ({ active }: { active: boolean }) => {
 
           {/* Сцена 3-4: 3D Кластеры (6-18 сек) */}
           <div 
-            className="absolute inset-0 perspective-1000"
-            style={{ animationDelay: "6s" }}
+            className="absolute inset-0 perspective-1000 opacity-0"
+            style={{ 
+              animationDelay: "6s",
+              animation: "fade-in 0.5s ease-out forwards",
+              animationFillMode: "forwards"
+            }}
           >
             <div className="relative w-full h-full animate-rotate3d">
               {/* Группа 1: Новости */}
-              <div className="absolute left-1/4 top-1/4 -translate-x-1/2 -translate-y-1/2">
+              <div className="absolute left-1/4 top-1/3 -translate-x-1/2 -translate-y-1/2">
                 <div className="relative">
                   {Array.from({ length: 8 }).map((_, i) => (
                     <div
                       key={i}
                       className="absolute w-3 h-3 bg-blue-400 rounded-full animate-pulse"
                       style={{ 
-                        transform: `translate(${Math.cos(i * Math.PI/4) * 50}px, ${Math.sin(i * Math.PI/4) * 50}px)`,
+                        transform: `translate3d(${Math.cos(i * Math.PI/4) * 50}px, ${Math.sin(i * Math.PI/4) * 50}px, ${Math.sin(i * Math.PI/3) * 30}px)`,
                         animationDelay: `${6 + i * 0.2}s`
                       }}
                     />
@@ -83,14 +90,14 @@ export const SlideProcessing = ({ active }: { active: boolean }) => {
               </div>
 
               {/* Группа 2: Расписание */}
-              <div className="absolute right-1/4 top-1/4 translate-x-1/2 -translate-y-1/2">
+              <div className="absolute right-1/4 top-1/3 translate-x-1/2 -translate-y-1/2">
                 <div className="relative">
                   {Array.from({ length: 8 }).map((_, i) => (
                     <div
                       key={i}
                       className="absolute w-3 h-3 bg-green-400 rounded-full animate-pulse"
                       style={{ 
-                        transform: `translate(${Math.cos(i * Math.PI/4) * 40}px, ${Math.sin(i * Math.PI/4) * 40}px)`,
+                        transform: `translate3d(${Math.cos(i * Math.PI/4) * 40}px, ${Math.sin(i * Math.PI/4) * 40}px, ${Math.cos(i * Math.PI/3) * 30}px)`,
                         animationDelay: `${7 + i * 0.2}s`
                       }}
                     />
@@ -109,7 +116,7 @@ export const SlideProcessing = ({ active }: { active: boolean }) => {
                       key={i}
                       className="absolute w-3 h-3 bg-purple-400 rounded-full animate-pulse"
                       style={{ 
-                        transform: `translate(${Math.cos(i * Math.PI/4) * 45}px, ${Math.sin(i * Math.PI/4) * 45}px)`,
+                        transform: `translate3d(${Math.cos(i * Math.PI/4) * 45}px, ${Math.sin(i * Math.PI/4) * 45}px, ${Math.sin(i * Math.PI/2) * 30}px)`,
                         animationDelay: `${8 + i * 0.2}s`
                       }}
                     />
@@ -124,8 +131,11 @@ export const SlideProcessing = ({ active }: { active: boolean }) => {
 
           {/* Сцена 5: Финальное сообщение (18-20 сек) */}
           <div 
-            className="absolute inset-0 flex items-center justify-center animate-fade-in"
-            style={{ animationDelay: "18s" }}
+            className="absolute inset-0 flex items-center justify-center animate-fade-in opacity-0"
+            style={{ 
+              animationDelay: "18s",
+              animationFillMode: "forwards"
+            }}
           >
             <p className="text-xl text-telegram-primary text-center">
               Эмбеддинг завершен. Данные готовы к хранению.
@@ -154,6 +164,15 @@ export const SlideProcessing = ({ active }: { active: boolean }) => {
 
         .perspective-1000 {
           perspective: 1000px;
+        }
+
+        @keyframes scale-up {
+          0% { transform: scale(0); opacity: 0; }
+          100% { transform: scale(1); opacity: 1; }
+        }
+
+        .animate-scale-up {
+          animation: scale-up 0.5s ease-out forwards;
         }
       `}</style>
     </Slide>
