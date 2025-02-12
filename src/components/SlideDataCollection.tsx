@@ -123,7 +123,7 @@ export const SlideDataCollection = ({ active }: { active: boolean }) => {
         </p>
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes scanline {
           0% {
             transform: translateY(-100%);
