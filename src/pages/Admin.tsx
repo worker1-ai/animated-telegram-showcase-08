@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -11,7 +10,6 @@ import { Upload, User } from "lucide-react";
 type PhoneNumber = {
   id: string;
   phone_number: string;
-  name: string;
   status: "answered" | "no_answer" | "rejected" | null;
   called_at: string | null;
   notes: string | null;
@@ -77,11 +75,9 @@ const Admin = () => {
 
       if (error) throw error;
 
-      // Преобразуем данные в правильный формат и добавляем значения по умолчанию
       const formattedData: PhoneNumber[] = (data || []).map(item => ({
         id: item.id,
         phone_number: item.phone_number,
-        name: typeof item.name === 'string' ? item.name : "Unknown",
         status: item.status,
         called_at: item.called_at,
         notes: item.notes,
@@ -129,31 +125,24 @@ const Admin = () => {
 
       const text = await file.text();
       
-      // Извлекаем имена и телефоны из VCF
       const contacts = new Map<string, string>();
       const vcfEntries = text.split("BEGIN:VCARD");
       
       for (const entry of vcfEntries) {
         if (!entry.trim()) continue;
         
-        // Ищем имя в разных форматах
-        const nameMatch = entry.match(/FN:([^\n]+)/) || 
-                         entry.match(/N:([^\n]+)/) ||
-                         entry.match(/NICKNAME:([^\n]+)/);
         const phoneMatch = entry.match(/TEL[^:]*:([\+\d\s-]+)/);
         
         if (phoneMatch) {
-          const name = nameMatch ? nameMatch[1].trim() : "Unknown";
           const phone = phoneMatch[1].replace(/[\s-()]/g, '');
-          contacts.set(phone, name);
+          contacts.set(phone, phone);
         }
       }
 
       if (contacts.size > 0) {
         const now = new Date().toISOString();
-        const contactsToInsert = Array.from(contacts).map(([phone, name]) => ({
+        const contactsToInsert = Array.from(contacts).map(([phone]) => ({
           phone_number: phone,
-          name: name,
           status: null,
           called_at: null,
           notes: null,
@@ -199,7 +188,6 @@ const Admin = () => {
     try {
       const newContact = {
         phone_number: newNumber.trim(),
-        name: newName.trim() || "Unknown",
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       };
@@ -313,7 +301,7 @@ const Admin = () => {
                       <User className="w-5 h-5 text-gray-400" />
                     </div>
                     <div>
-                      <p className="font-medium">{phone.name}</p>
+                      <p className="font-medium">{phone.phone_number}</p>
                       <p className="text-sm text-gray-500">{phone.phone_number}</p>
                     </div>
                   </div>
