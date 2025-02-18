@@ -10,6 +10,7 @@ import { Upload, User } from "lucide-react";
 type PhoneNumber = {
   id: string;
   phone_number: string;
+  name: string;
   status: "answered" | "no_answer" | "rejected" | null;
   called_at: string | null;
   notes: string | null;
@@ -78,6 +79,7 @@ const Admin = () => {
       const formattedData: PhoneNumber[] = (data || []).map(item => ({
         id: item.id,
         phone_number: item.phone_number,
+        name: item.name || "Unknown",
         status: item.status,
         called_at: item.called_at,
         notes: item.notes,
@@ -131,18 +133,23 @@ const Admin = () => {
       for (const entry of vcfEntries) {
         if (!entry.trim()) continue;
         
+        const nameMatch = entry.match(/FN:([^\n]+)/) || 
+                         entry.match(/N:([^\n]+)/) ||
+                         entry.match(/NICKNAME:([^\n]+)/);
         const phoneMatch = entry.match(/TEL[^:]*:([\+\d\s-]+)/);
         
         if (phoneMatch) {
+          const name = nameMatch ? nameMatch[1].trim() : "Unknown";
           const phone = phoneMatch[1].replace(/[\s-()]/g, '');
-          contacts.set(phone, phone);
+          contacts.set(phone, name);
         }
       }
 
       if (contacts.size > 0) {
         const now = new Date().toISOString();
-        const contactsToInsert = Array.from(contacts).map(([phone]) => ({
+        const contactsToInsert = Array.from(contacts).map(([phone, name]) => ({
           phone_number: phone,
+          name: name,
           status: null,
           called_at: null,
           notes: null,
@@ -188,6 +195,7 @@ const Admin = () => {
     try {
       const newContact = {
         phone_number: newNumber.trim(),
+        name: newName.trim() || "Unknown",
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       };
