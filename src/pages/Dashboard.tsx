@@ -10,6 +10,7 @@ import { Phone, LogOut } from "lucide-react";
 type PhoneNumber = {
   id: string;
   phone_number: string;
+  name: string;
   status: "answered" | "no_answer" | "rejected" | null;
 };
 
@@ -78,7 +79,15 @@ const Dashboard = () => {
         .order("created_at");
 
       if (error) throw error;
-      setPhoneNumbers(data || []);
+      
+      const formattedData = (data || []).map(item => ({
+        id: item.id,
+        phone_number: item.phone_number,
+        name: item.name || "Unknown",
+        status: item.status
+      }));
+      
+      setPhoneNumbers(formattedData);
     } catch (error: any) {
       toast({
         title: "Error",
@@ -169,9 +178,12 @@ const Dashboard = () => {
             {phoneNumbers.map((phone) => (
               <Card key={phone.id} className="p-4">
                 <div className="flex items-center justify-between flex-wrap gap-4">
-                  <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4" />
-                    <span className="font-medium">{phone.phone_number}</span>
+                  <div className="flex flex-col">
+                    <span className="font-medium">{phone.name}</span>
+                    <div className="flex items-center gap-2 text-gray-500">
+                      <Phone className="w-4 h-4" />
+                      <span>{phone.phone_number}</span>
+                    </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <Button 
