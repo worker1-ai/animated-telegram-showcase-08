@@ -79,14 +79,16 @@ const Dashboard = () => {
 
       if (error) throw error;
       
-      const formattedData = (data || []).map(item => ({
-        id: item.id,
-        phone_number: item.phone_number,
-        name: item.name || "Unknown",
-        status: item.status
-      }));
-      
-      setPhoneNumbers(formattedData);
+      if (data) {
+        const formattedData: PhoneNumber[] = data.map(item => ({
+          id: item.id,
+          phone_number: item.phone_number,
+          name: item.name || "Unknown",
+          status: item.status
+        }));
+        
+        setPhoneNumbers(formattedData);
+      }
     } catch (error: any) {
       toast({
         title: "Error",

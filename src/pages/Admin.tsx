@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -72,15 +71,15 @@ const Admin = () => {
     try {
       const { data, error } = await supabase
         .from("phone_numbers")
-        .select("*")
+        .select("id, phone_number, name, status, called_at, notes, assigned_to, created_at, updated_at")
         .order("created_at");
 
       if (error) throw error;
-
+      
       const formattedData: PhoneNumber[] = (data || []).map(item => ({
         id: item.id,
         phone_number: item.phone_number,
-        name: item.name || "Unknown",
+        name: item.name,
         status: item.status,
         called_at: item.called_at,
         notes: item.notes,
@@ -88,7 +87,7 @@ const Admin = () => {
         created_at: item.created_at,
         updated_at: item.updated_at
       }));
-
+      
       setPhoneNumbers(formattedData);
     } catch (error: any) {
       toast({
@@ -96,8 +95,6 @@ const Admin = () => {
         description: error.message,
         variant: "destructive",
       });
-    } finally {
-      setLoading(false);
     }
   };
 
