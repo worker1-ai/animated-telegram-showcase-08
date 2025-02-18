@@ -6,11 +6,12 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Upload } from "lucide-react";
+import { Upload, User } from "lucide-react";
 
 type PhoneNumber = {
   id: string;
   phone_number: string;
+  name: string;
   status: "answered" | "no_answer" | "rejected" | null;
   called_at: string | null;
 };
@@ -18,6 +19,7 @@ type PhoneNumber = {
 const Admin = () => {
   const [phoneNumbers, setPhoneNumbers] = useState<PhoneNumber[]>([]);
   const [newNumber, setNewNumber] = useState("");
+  const [newName, setNewName] = useState("");
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -36,14 +38,12 @@ const Admin = () => {
       return;
     }
 
-    // First check if profile exists
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select("is_admin")
       .eq("id", session.user.id)
       .maybeSingle();
 
-    // If no profile exists, create one
     if (!profile) {
       const { error: createError } = await supabase
         .from("profiles")
@@ -56,7 +56,6 @@ const Admin = () => {
       }
     }
 
-    // Check if user is admin
     if (!profile?.is_admin) {
       navigate("/dashboard");
       return;
@@ -100,53 +99,56 @@ const Admin = () => {
 
     setUploading(true);
     try {
-      // Create a sanitized filename using only ASCII characters
       const timestamp = Date.now();
       const sanitizedName = file.name.replace(/[^\x00-\x7F]/g, '').replace(/\s+/g, '_');
       const fileName = `${timestamp}-${sanitizedName}`;
 
-      // Upload file to Supabase storage
       const { error: uploadError } = await supabase.storage
         .from('vcf_files')
         .upload(fileName, file);
 
       if (uploadError) throw uploadError;
 
-      // Read the file content
       const text = await file.text();
       
-      // Extract phone numbers using regex
-      const phoneRegex = /TEL[^:]*:([\+\d\s-]+)/g;
-      const phones = new Set<string>();
-      let match;
-
-      while ((match = phoneRegex.exec(text)) !== null) {
-        // Clean up phone number - remove spaces, dashes, and other characters
-        const cleanNumber = match[1].replace(/[\s-()]/g, '');
-        phones.add(cleanNumber);
+      // Извлекаем имена и телефоны из VCF
+      const contacts = new Map<string, string>();
+      const vcfEntries = text.split("BEGIN:VCARD");
+      
+      for (const entry of vcfEntries) {
+        if (!entry.trim()) continue;
+        
+        const nameMatch = entry.match(/FN:([^\n]+)/);
+        const phoneMatch = entry.match(/TEL[^:]*:([\+\d\s-]+)/);
+        
+        if (nameMatch && phoneMatch) {
+          const name = nameMatch[1].trim();
+          const phone = phoneMatch[1].replace(/[\s-()]/g, '');
+          contacts.set(phone, name);
+        }
       }
 
-      // Insert phone numbers into database
-      if (phones.size > 0) {
-        const phonesToInsert = Array.from(phones).map(phone => ({
-          phone_number: phone
+      if (contacts.size > 0) {
+        const contactsToInsert = Array.from(contacts).map(([phone, name]) => ({
+          phone_number: phone,
+          name: name
         }));
 
         const { error: insertError } = await supabase
           .from('phone_numbers')
-          .insert(phonesToInsert);
+          .insert(contactsToInsert);
 
         if (insertError) throw insertError;
 
         toast({
-          description: `Successfully imported ${phones.size} phone numbers`,
+          description: `Successfully imported ${contacts.size} contacts`,
         });
 
         fetchPhoneNumbers();
       } else {
         toast({
           title: "Warning",
-          description: "No phone numbers found in the VCF file",
+          description: "No contacts found in the VCF file",
           variant: "destructive",
         });
       }
@@ -158,7 +160,6 @@ const Admin = () => {
       });
     } finally {
       setUploading(false);
-      // Reset file input
       event.target.value = '';
     }
   };
@@ -170,15 +171,19 @@ const Admin = () => {
     try {
       const { error } = await supabase
         .from("phone_numbers")
-        .insert([{ phone_number: newNumber.trim() }]);
+        .insert([{ 
+          phone_number: newNumber.trim(),
+          name: newName.trim() || "Unknown"
+        }]);
 
       if (error) throw error;
 
       toast({
-        description: "Phone number added successfully",
+        description: "Contact added successfully",
       });
       
       setNewNumber("");
+      setNewName("");
       fetchPhoneNumbers();
     } catch (error: any) {
       toast({
@@ -200,7 +205,7 @@ const Admin = () => {
 
       setPhoneNumbers(phoneNumbers.filter(phone => phone.id !== id));
       toast({
-        description: "Phone number deleted successfully",
+        description: "Contact deleted successfully",
       });
     } catch (error: any) {
       toast({
@@ -226,54 +231,87 @@ const Admin = () => {
         </div>
 
         <div className="grid gap-6">
-          <Card className="p-4">
+          <Card className="p-6">
             <h2 className="text-lg font-semibold mb-4">Import Contacts</h2>
             <div className="flex items-center gap-2">
-              <Input
-                type="file"
-                accept=".vcf"
-                onChange={handleVcfUpload}
-                disabled={uploading}
-                className="flex-1"
-              />
+              <div className="flex-1 bg-white rounded-lg p-4 border border-gray-200">
+                <Input
+                  type="file"
+                  accept=".vcf"
+                  onChange={handleVcfUpload}
+                  disabled={uploading}
+                  className="file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-500 file:text-white hover:file:bg-blue-600 cursor-pointer"
+                />
+                <p className="text-sm text-gray-500 mt-2">
+                  Upload a VCF file to import contacts with names and phone numbers
+                </p>
+              </div>
               {uploading && <div className="text-sm text-gray-500">Uploading...</div>}
             </div>
           </Card>
 
-          <Card className="p-4">
-            <h2 className="text-lg font-semibold mb-4">Add Single Number</h2>
-            <form onSubmit={addPhoneNumber} className="flex gap-2">
-              <Input
-                type="tel"
-                placeholder="Add new phone number"
-                value={newNumber}
-                onChange={(e) => setNewNumber(e.target.value)}
-                className="flex-1"
-              />
-              <Button type="submit">Add Number</Button>
+          <Card className="p-6">
+            <h2 className="text-lg font-semibold mb-4">Add Single Contact</h2>
+            <form onSubmit={addPhoneNumber} className="space-y-4">
+              <div>
+                <Input
+                  type="text"
+                  placeholder="Contact name"
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  className="mb-2"
+                />
+                <Input
+                  type="tel"
+                  placeholder="Phone number"
+                  value={newNumber}
+                  onChange={(e) => setNewNumber(e.target.value)}
+                />
+              </div>
+              <Button type="submit" className="w-full">Add Contact</Button>
             </form>
           </Card>
 
           <div className="grid gap-4">
-            {phoneNumbers.map((phone) => (
-              <Card key={phone.id} className="p-4">
+            {phoneNumbers.slice(0, 10).map((phone) => (
+              <Card key={phone.id} className="p-4 hover:bg-gray-50 transition-colors">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium">{phone.phone_number}</p>
-                    <p className="text-sm text-gray-500">
-                      Status: {phone.status || "Not called"}
-                      {phone.called_at && ` (Called: ${new Date(phone.called_at).toLocaleString()})`}
-                    </p>
+                  <div className="flex items-center gap-4">
+                    <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
+                      <User className="w-5 h-5 text-gray-400" />
+                    </div>
+                    <div>
+                      <p className="font-medium">{phone.name || "Unknown"}</p>
+                      <p className="text-sm text-gray-500">{phone.phone_number}</p>
+                    </div>
                   </div>
-                  <Button
-                    variant="destructive"
-                    onClick={() => deletePhoneNumber(phone.id)}
-                  >
-                    Delete
-                  </Button>
+                  <div className="flex items-center gap-4">
+                    <div className="text-sm text-gray-500">
+                      {phone.status && (
+                        <span className={`px-2 py-1 rounded ${
+                          phone.status === 'answered' ? 'bg-green-100 text-green-700' :
+                          'bg-red-100 text-red-700'
+                        }`}>
+                          {phone.status}
+                        </span>
+                      )}
+                    </div>
+                    <Button
+                      variant="destructive"
+                      onClick={() => deletePhoneNumber(phone.id)}
+                      size="sm"
+                    >
+                      Delete
+                    </Button>
+                  </div>
                 </div>
               </Card>
             ))}
+            {phoneNumbers.length > 10 && (
+              <div className="text-center text-gray-500 p-4">
+                Showing 10 of {phoneNumbers.length} contacts
+              </div>
+            )}
           </div>
         </div>
       </div>
