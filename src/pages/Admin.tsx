@@ -14,6 +14,10 @@ type PhoneNumber = {
   name: string;
   status: "answered" | "no_answer" | "rejected" | null;
   called_at: string | null;
+  notes: string | null;
+  assigned_to: string | null;
+  created_at: string;
+  updated_at: string;
 };
 
 const Admin = () => {
@@ -72,7 +76,14 @@ const Admin = () => {
         .order("created_at");
 
       if (error) throw error;
-      setPhoneNumbers(data || []);
+
+      // Убедимся, что все поля соответствуют типу PhoneNumber
+      const formattedData: PhoneNumber[] = (data || []).map(item => ({
+        ...item,
+        name: item.name || "Unknown", // Добавляем значение по умолчанию, если name отсутствует
+      }));
+
+      setPhoneNumbers(formattedData);
     } catch (error: any) {
       toast({
         title: "Error",
@@ -131,7 +142,9 @@ const Admin = () => {
       if (contacts.size > 0) {
         const contactsToInsert = Array.from(contacts).map(([phone, name]) => ({
           phone_number: phone,
-          name: name
+          name: name,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
         }));
 
         const { error: insertError } = await supabase
@@ -169,12 +182,16 @@ const Admin = () => {
     if (!newNumber.trim()) return;
 
     try {
+      const newContact = {
+        phone_number: newNumber.trim(),
+        name: newName.trim() || "Unknown",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+
       const { error } = await supabase
         .from("phone_numbers")
-        .insert([{ 
-          phone_number: newNumber.trim(),
-          name: newName.trim() || "Unknown"
-        }]);
+        .insert([newContact]);
 
       if (error) throw error;
 
@@ -281,7 +298,7 @@ const Admin = () => {
                       <User className="w-5 h-5 text-gray-400" />
                     </div>
                     <div>
-                      <p className="font-medium">{phone.name || "Unknown"}</p>
+                      <p className="font-medium">{phone.name}</p>
                       <p className="text-sm text-gray-500">{phone.phone_number}</p>
                     </div>
                   </div>
