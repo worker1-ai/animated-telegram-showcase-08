@@ -77,11 +77,11 @@ const Admin = () => {
 
       if (error) throw error;
 
-      // Преобразуем данные в правильный формат
+      // Преобразуем данные в правильный формат и добавляем значения по умолчанию
       const formattedData: PhoneNumber[] = (data || []).map(item => ({
         id: item.id,
         phone_number: item.phone_number,
-        name: item.name || "Unknown",
+        name: 'name' in item ? item.name : "Unknown",
         status: item.status,
         called_at: item.called_at,
         notes: item.notes,
