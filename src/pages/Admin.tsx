@@ -81,7 +81,7 @@ const Admin = () => {
       const formattedData: PhoneNumber[] = (data || []).map(item => ({
         id: item.id,
         phone_number: item.phone_number,
-        name: 'name' in item ? item.name : "Unknown",
+        name: typeof item.name === 'string' ? item.name : "Unknown",
         status: item.status,
         called_at: item.called_at,
         notes: item.notes,
