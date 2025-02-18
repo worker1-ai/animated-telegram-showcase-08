@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -10,7 +9,7 @@ import { Phone, LogOut } from "lucide-react";
 type PhoneNumber = {
   id: string;
   phone_number: string;
-  name: string;
+  name: string | null;
   status: "answered" | "no_answer" | "rejected" | null;
 };
 
@@ -75,7 +74,7 @@ const Dashboard = () => {
     try {
       const { data, error } = await supabase
         .from("phone_numbers")
-        .select("*")
+        .select("id, phone_number, name, status")
         .order("created_at");
 
       if (error) throw error;

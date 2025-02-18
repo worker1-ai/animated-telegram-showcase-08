@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,7 @@ import { Upload, User } from "lucide-react";
 type PhoneNumber = {
   id: string;
   phone_number: string;
-  name: string;
+  name: string | null;
   status: "answered" | "no_answer" | "rejected" | null;
   called_at: string | null;
   notes: string | null;
