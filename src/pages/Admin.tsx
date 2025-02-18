@@ -77,10 +77,17 @@ const Admin = () => {
 
       if (error) throw error;
 
-      // Убедимся, что все поля соответствуют типу PhoneNumber
+      // Преобразуем данные в правильный формат
       const formattedData: PhoneNumber[] = (data || []).map(item => ({
-        ...item,
-        name: item.name || "Unknown", // Добавляем значение по умолчанию, если name отсутствует
+        id: item.id,
+        phone_number: item.phone_number,
+        name: item.name || "Unknown",
+        status: item.status,
+        called_at: item.called_at,
+        notes: item.notes,
+        assigned_to: item.assigned_to,
+        created_at: item.created_at,
+        updated_at: item.updated_at
       }));
 
       setPhoneNumbers(formattedData);
@@ -129,22 +136,30 @@ const Admin = () => {
       for (const entry of vcfEntries) {
         if (!entry.trim()) continue;
         
-        const nameMatch = entry.match(/FN:([^\n]+)/);
+        // Ищем имя в разных форматах
+        const nameMatch = entry.match(/FN:([^\n]+)/) || 
+                         entry.match(/N:([^\n]+)/) ||
+                         entry.match(/NICKNAME:([^\n]+)/);
         const phoneMatch = entry.match(/TEL[^:]*:([\+\d\s-]+)/);
         
-        if (nameMatch && phoneMatch) {
-          const name = nameMatch[1].trim();
+        if (phoneMatch) {
+          const name = nameMatch ? nameMatch[1].trim() : "Unknown";
           const phone = phoneMatch[1].replace(/[\s-()]/g, '');
           contacts.set(phone, name);
         }
       }
 
       if (contacts.size > 0) {
+        const now = new Date().toISOString();
         const contactsToInsert = Array.from(contacts).map(([phone, name]) => ({
           phone_number: phone,
           name: name,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          status: null,
+          called_at: null,
+          notes: null,
+          assigned_to: null,
+          created_at: now,
+          updated_at: now
         }));
 
         const { error: insertError } = await supabase
